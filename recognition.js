@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 $(document).ready(function(){
+    createDemo()
+})
+
+function createDemo(){
     var width = document.getElementById('canvasContainer').offsetWidth;
     var height = document.getElementById('canvasContainer').offsetHeight;
     console.log(width)
@@ -71,7 +75,13 @@ $(document).ready(function(){
     var my_Ellipse = new paper.Shape.Ellipse(ell_rect);
     my_Ellipse.strokeColor = 'black'
     my_Ellipse.selected = true
-})
+
+    var demo_text = new paper.PointText(new paper.Point(width-62,305));
+    demo_text.fillColor = 'black';
+    demo_text.fontSize = 12
+    demo_text.justification = 'center'
+    demo_text.content = 'Demo figures';
+}
 
 function attachClickHandlers() {
     document.getElementById('draw').addEventListener('click', enableDraw);
@@ -506,6 +516,7 @@ function clearCanvases() {
     undoDone = false
     text = null
     console.log("Came here after flushing")
+    createDemo()
 }
 
 function clearSketchData() {

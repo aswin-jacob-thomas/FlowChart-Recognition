@@ -12,11 +12,12 @@ function FlowChart(stroke) // constructor
             return 'line';
         }
         
-        else if(this.circle(stroke, segments)){
-            console.log("Our recognizer shows circle");
-            return 'circle';
+        // else if(this.circle(stroke, segments)){
+        //     console.log("Our recognizer shows circle");
+        //     return 'circle';
 
-        }else if(this.diamond(stroke, segments)){
+        // }
+        else if(this.diamond(stroke, segments)){
             console.log("Our recognizer shows diamond");
             return 'diamond';
         }else if(this.square(stroke, segments)){

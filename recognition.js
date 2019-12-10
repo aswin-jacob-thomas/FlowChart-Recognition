@@ -292,6 +292,10 @@ function recognize(sketch) {
 
         doComputations()
     }else{
+        undoDone = true;
+        for(let key in metric){
+            metric[key].addTN();
+        }
         alert("Unidentified figure!!! Please draw again")
         return;
     }
@@ -456,6 +460,11 @@ function clearCanvases() {
     }
 
     document.getElementById('psuedo').value='';
+    ellipse_text = null;
+    window.figrues = []
+    code = ''
+    undoDone = false
+    text = null
 }
 
 function clearSketchData() {

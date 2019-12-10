@@ -4,6 +4,7 @@ import SketchSurface from './sketchSurface/sketchSurface.js';
 import DollarRecognizer from './sketch/recognizers/dollar.js';
 import FlowChart from './sketch/recognizers/flowchart.js'
 import Figure from './figure.js'
+import Metrics from './metrics.js'
 
 /***** Don't edit until the comment saying to edit bleow unless you know what you are doing *****/
 let sketchSurface, sketch;
@@ -17,6 +18,13 @@ let ellipse_text = null;
 let dollar = new DollarRecognizer();
 let flowChart = new FlowChart();
 document.getElementById('psuedo').value='';
+let metric = {}
+metric['ellipse'] = new Metrics('ellipse');
+metric['square'] = new Metrics('square');
+metric['rectangle'] = new Metrics('rectangle');
+metric['diamond'] = new Metrics('diamond');
+metric['line'] = new Metrics('line');
+
 document.addEventListener('DOMContentLoaded', function() {
     attachClickHandlers();
     sketchSurface = new SketchSurface('sketchCanvas');
@@ -54,10 +62,22 @@ function onErase(strokeIds) {
 }
 
 function generateMetrics(){
+    // console.log($("#line_accuracy").html(123))
+    // console.log($("#line_accuracy").html(metric['line'].accuracy()))
+    // console.log()
+    // $("#line_accuracy").html(metric['line'].accuracy())
+    for(let key in metric){
+        let accuracy_id = key+"_accuracy";
+        let f_id = key+"_f";
+
+        $('#'+accuracy_id).html(metric[key].accuracy());
+        $('#'+f_id).html(metric[key].fmeasure());
+    }
     $( "#dialog-modal" ).dialog({
         maxHeight: 600,
         // height: 140,
-        modal: true
+        modal: true,
+        width:350
       });
      $( "#dialog-modal" ).show();
 }
@@ -98,17 +118,9 @@ function generateCode(head, initialSpace){
 function isValidFlowChart(){
 
 }
-// let pseudoVisible = false;
+
 function generatePsuedoCode(){
-    // console.log('visisble', pseudoVisible)
-    //window.figures
-    // if(pseudoVisible == false){
-    //     document.getElementById('drawColumn').className = 'column';
-    //     pseudoVisible = true;
-    // }else{
-    //     document.getElementById('drawColumn').classList.remove('column');
-    //     pseudoVisible = false;
-    // }
+   
     code = ''
     
     if(window.figures.length >0){
@@ -118,8 +130,9 @@ function generatePsuedoCode(){
     }
     
     document.getElementById('psuedo').value = code;
-    // console.log(code)
 }
+
+let undoDone = false;
 
 function undoLastFigure(){
     console.log("coming inside undo")
@@ -136,9 +149,18 @@ function undoLastFigure(){
         else if(ellipse_text == 'Start')
             ellipse_text = null;
     }
+
+    metric[shape].subtractTP();
+    metric[shape].addFP();
+    undoDone = true;
 }
 
 // This is called every time there is a mouse or pen up event on the canvas
+let text;
+let new_path;
+let rec_shape={};
+let center;
+let dialog_to_show = createDialog()
 function recognize(sketch) {
     let substrokeIds = []
     let lastStroke = sketchSurface.activeSRLStroke;
@@ -151,14 +173,10 @@ function recognize(sketch) {
         }
 
     }
-    let rec_shape={};
+    rec_shape={};
     rec_shape['Name'] = flowChart.chartRecognizer(lastStroke, recognizers.Segment(lastStroke));
-    let center;
-    // let rec_shape = dollar.Recognize(lastStroke.points, true)
-    // console.log(rec_shape.Name)
-    let new_path;
+   
     let BB = lastStroke.boundingBox;
-    let text;
     
     if(rec_shape.Name == 'circle'){
         
@@ -181,17 +199,12 @@ function recognize(sketch) {
             fillColor: 'green'
 
         });
-        text = prompt("Please enter your computation statement");
+        document.getElementById("query_label").innerHTML = "Please enter computation statement";
+        dialog_to_show.dialog("open")
         
-    }else if(rec_shape.Name == 'line' || rec_shape.Name == 'arrow'){
+    }else if(rec_shape.Name == 'line'){
         let st_points = lastStroke.points;
-        // let from = new paper.Point(st_points[0].x, st_points[0].y);
-        // let to = new paper.Point(st_points[st_points.length-1].x, st_points[st_points.length-1].y);
-        // new_path = new paper.Path.Line({
-        //     from: from,
-        //     to: to,
-        //     strokeColor: 'black'
-        // })
+        
         let start = new paper.Point(st_points[0].x, st_points[0].y);;
         let headLength = 20;
         let tailLength = 9;
@@ -199,9 +212,6 @@ function recognize(sketch) {
         let tailAngle = 110
         let end = new paper.Point(st_points[st_points.length-1].x, st_points[st_points.length-1].y);
         let arrowVec = start.subtract(end);
-
-        // parameterize {headLength: 20, tailLength: 6, headAngle: 35, tailAngle: 110}
-        // construct the arrow
         let arrowHead = arrowVec.normalize(headLength);
         let arrowTail = arrowHead.normalize(tailLength);
 
@@ -220,7 +230,9 @@ function recognize(sketch) {
         new_path.strokeWidth = 1
         new_path.strokColor = 'black'
         new_path.fillColor = 'black'
-
+        text = 'line';
+        doComputations()
+        
        
     }else if(rec_shape.Name == 'diamond'){
         center = new paper.Point((BB[0].x + BB[1].x)/2, (BB[0].y + BB[1].y)/2)
@@ -233,7 +245,9 @@ function recognize(sketch) {
             strokeColor: 'black'});
 
         new_path.rotate(45);
-        text = prompt("Please enter your condition statement");
+        // text = prompt("Please enter your condition statement");
+        document.getElementById("query_label").innerHTML = "Please enter the condition";
+        dialog_to_show.dialog("open")
         
     }else if(rec_shape.Name == 'square'){
         center = new paper.Point((BB[0].x + BB[1].x)/2, (BB[0].y + BB[1].y)/2);
@@ -244,7 +258,10 @@ function recognize(sketch) {
             radius: radius,
             fillColor: 'yellow',
             strokeColor: 'black'});
-        text = prompt("Please enter your input/output statement");
+        // text = prompt("Please enter your input/output statement");
+        document.getElementById("query_label").innerHTML = "Please enter input/output";
+        dialog_to_show.dialog("open")
+        $('.ui-dialog-buttonpane > button:last').focus();
         
     }else if(rec_shape.Name == 'ellipse'){
         let rectangle = new paper.Rectangle(new paper.Point(BB[0].x, BB[0].y), new paper.Point(BB[1].x, BB[1].y));
@@ -258,7 +275,7 @@ function recognize(sketch) {
             fillColor: 'grey'
 
         });
-        console.log('ellipse_Text',ellipse_text);
+        // console.log('ellipse_Text',ellipse_text);
         if(ellipse_text == null){
             text = 'Start';
             ellipse_text = 'Start';
@@ -270,17 +287,40 @@ function recognize(sketch) {
             alert("You cant do that!!! ");
             new_path.visible = false;
             rec_shape.Name = undefined;
+            return;
         }
+
+        doComputations()
     }else{
         alert("Unidentified figure!!! Please draw again")
+        return;
     }
 
-    if(text == null){
+}
+
+function doComputations(){
+
+    if(dialog_to_show.dialog('isOpen')){
+        text = $( "#dialog-form input" ).val();
+        console.log("hey i got ", text);
+        $( "#dialog-form input" ).val('');
+        dialog_to_show.dialog( "close" );
+    }
+    // console.log("coming here ", (text == null))
+    if(text.length == 0){
         new_path.visible = false;
+        undoDone = true;
+        metric[rec_shape.Name].addFP();
+        for(let key in metric){
+            if(key!=rec_shape.Name){
+                metric[key].addTN();
+            }
+        }
         return;
     }
 
     let new_figure;
+    // console.log("shape ", rec_shape.Name)
     if(rec_shape.Name!=undefined){
         if(rec_shape.Name!= 'line'){
             let text_node = new paper.PointText(center);
@@ -294,37 +334,54 @@ function recognize(sketch) {
 
         
         window.figures.push(new_figure);
+        if(undoDone){
+            undoDone = false;
+            metric[rec_shape.Name].addFN();
+            metric[rec_shape.Name].subtractTN();
+        }
+        metric[rec_shape.Name].addTP();
+        for(let key in metric){
+            
+            if(key!=rec_shape.Name){
+                // console.log(key, " recieving TN")
+                metric[key].addTN();
+            }
+
+            console.log(key," TP ", metric[key].getTP(), " TN ", metric[key].getTN(), " FP ", metric[key].getFP(), " FN ", metric[key].getFN())
+        }
+
+        
         
     }
-
-    // console.log("FIGURES ARE")
-    // for( let fig of window.figures){
-    //     console.log(fig.shape);
-    // }
     
     find_connections(window.figures);
-    // console.log(paper)
-    // console.log(rec_shape)
-    // Example of how you can create a shape
-    
-    // let shape = new Sketch.Shape();
-    // shape.setInterpretation('circle');
-    // for (let id of substrokeIds) {
-    //     shape.addSubElement(sketch.substrokes[id]);
-    //     delete sketch.substrokes[id]; // Removes from sketch.substrokes if you want to use sketch.substrokes as a holder for unrecognized substrokes
-    // }
-    // console.log(sketch)
-    // Example of how you can change the color/size of strokes and make them unerasable given the shapeId
-    
-    // let shapeId = undefined;
-    // for (let substroke of sketch.shapes[shapeId].strokes) {
-    //     let paperPath = sketchSurface.srlToPaper[substroke.parent];
-    //     paperPath.erasable = false;
-    //     paperPath.strokeColor = 'orange';
-    //     paperPath.strokeWidth = 2;
-    // }
 
-        
+}
+
+let divElem = $(this);
+function createDialog(text_to_show){
+    $( "#dialog-form input" ).val('');
+    let dialog = $( "#dialog-form" ).dialog({
+        maxHeight: 600,
+        modal: true,
+        autoOpen : false,
+        width:350,
+        buttons: {
+            Save: function() {
+                console.log("from inside ", $( "#dialog-form input" ).val())
+                doComputations();
+                // divElem.find('.text').text($( "#dialog-form input" ).val()); 
+                // dialog.dialog( "close" );
+            },
+            Cancel: function() {
+                text = null;
+                doComputations();
+                dialog.dialog( "close" );
+            }
+        }
+    });
+    return dialog;
+    
 }
 
 function find_connections(figures){
@@ -369,14 +426,6 @@ function find_connections(figures){
         printRecursive(window.figures[0], window.figures[0].getLabel().getContent());
 }
 
-
-function unique_label(){
-    unique_label_counter += 1;
-    if(unique_label_counter == 91)
-        unique_label_counter = 65;
-    return String.fromCharCode(unique_label_counter);
-    
-}
 
 function setActiveDrawTool(elem) {
     let activeElems = document.querySelectorAll('#drawOptions .active');

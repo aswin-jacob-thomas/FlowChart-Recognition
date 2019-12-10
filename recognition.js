@@ -50,8 +50,45 @@ function onErase(strokeIds) {
     }
 }
 
-function isValidFlowChart(){
+function printRecursive(head, parent){
+    // console.log(head.getToFigures())
+    console.log(head.getShape(), " ", head.getLabel().getContent(), " coming from ", parent);
+    if(head.getToFigures() == null)
+        return;
+    for(let fig of head.getToFigures())
+        printRecursive(fig, head.getLabel().getContent());
+}
+let code = '';
 
+function generateCode(head, initialSpace){
+    if(head.getShape == 'line')
+        return;
+    if(head.getShape() != 'ellipse')    
+        code += initialSpace + head.getLabel().getContent()+"\n";
+    if(head.getToFigures() == null)
+        return;
+    Array.from(head.getToFigures()).forEach(function(fig, i){
+        if(head.getShape() == 'diamond'){
+            // console.log(fig,"asdfasdf",i);
+            if(i == 0){
+                generateCode(fig, ' '+initialSpace);
+            }
+            else{
+                code += initialSpace + 'else\n';
+                generateCode(fig, ' '+initialSpace)
+            }
+        }
+        else
+            generateCode(fig, initialSpace);
+    })
+}
+
+function isValidFlowChart(){
+    //window.figures
+    code += 'Start\n'
+    generateCode(window.figures[0],'');
+    code += 'Stop\n'
+    console.log(code)
 }
 
 function undoLastFigure(){
@@ -115,6 +152,7 @@ function recognize(sketch) {
 
         });
         text = prompt("Please enter your computation statement");
+        
     }else if(rec_shape.Name == 'line' || rec_shape.Name == 'arrow'){
         let st_points = lastStroke.points;
         // let from = new paper.Point(st_points[0].x, st_points[0].y);
@@ -166,6 +204,7 @@ function recognize(sketch) {
 
         new_path.rotate(45);
         text = prompt("Please enter your condition statement");
+        
     }else if(rec_shape.Name == 'square'){
         center = new paper.Point((BB[0].x + BB[1].x)/2, (BB[0].y + BB[1].y)/2);
         let radius = (BB[1].x - BB[0].x)*0.7;
@@ -176,6 +215,7 @@ function recognize(sketch) {
             fillColor: 'yellow',
             strokeColor: 'black'});
         text = prompt("Please enter your input/output statement");
+        
     }else if(rec_shape.Name == 'ellipse'){
         let rectangle = new paper.Rectangle(new paper.Point(BB[0].x, BB[0].y), new paper.Point(BB[1].x, BB[1].y));
         center = new paper.Point((BB[0].x + BB[1].x)/2, (BB[0].y + BB[1].y)/2)
@@ -293,14 +333,6 @@ function find_connections(figures){
         printRecursive(window.figures[0], window.figures[0].getLabel().getContent());
 }
 
-function printRecursive(head, parent){
-    // console.log(head.getToFigures())
-    console.log(head.getShape(), " ", head.getLabel().getContent(), " coming from ", parent);
-    if(head.getToFigures() == null)
-        return;
-    for(let fig of head.getToFigures())
-        printRecursive(fig, head.getLabel().getContent());
-}
 
 function unique_label(){
     unique_label_counter += 1;

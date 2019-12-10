@@ -42,9 +42,9 @@ canvas.erase {
 
 #drawOptions {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 218px;
+  top: 60px;
+  /* right: 15px; */
+  /* width: 218px; */
   height: 50px;
   border-radius: 25px;
 }
@@ -110,4 +110,21 @@ li.valid {
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 25px;
+}
+
+.column {
+  float: left;
+  width: 70%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.row{
+margin-left:0px;
+margin-right: 0px;
 }

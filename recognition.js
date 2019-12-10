@@ -32,6 +32,7 @@ function attachClickHandlers() {
     document.getElementById('undo').addEventListener('click', undoLastFigure);
     document.getElementById('generate').addEventListener('click',generatePsuedoCode);
     document.getElementById('isValid').addEventListener('click',isValidFlowChart);
+    document.getElementById('metrics').addEventListener('click',generateMetrics);
 }
 
 /***** Edit things below this point *****/
@@ -50,6 +51,15 @@ function onErase(strokeIds) {
             }
         }
     }
+}
+
+function generateMetrics(){
+    $( "#dialog-modal" ).dialog({
+        maxHeight: 600,
+        // height: 140,
+        modal: true
+      });
+     $( "#dialog-modal" ).show();
 }
 
 function printRecursive(head, parent){
@@ -86,7 +96,7 @@ function generateCode(head, initialSpace){
 }
 
 function isValidFlowChart(){
-    
+
 }
 // let pseudoVisible = false;
 function generatePsuedoCode(){
@@ -265,6 +275,11 @@ function recognize(sketch) {
         alert("Unidentified figure!!! Please draw again")
     }
 
+    if(text == null){
+        new_path.visible = false;
+        return;
+    }
+
     let new_figure;
     if(rec_shape.Name!=undefined){
         if(rec_shape.Name!= 'line'){
@@ -308,7 +323,8 @@ function recognize(sketch) {
     //     paperPath.strokeColor = 'orange';
     //     paperPath.strokeWidth = 2;
     // }
-    
+
+        
 }
 
 function find_connections(figures){

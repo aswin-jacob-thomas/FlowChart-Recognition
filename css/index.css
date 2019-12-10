@@ -121,6 +121,14 @@ li.generate {
   border-radius: 25px;
 }
 
+li.metrics {
+  background-color: #777;
+  background-image: url('../images/metrics.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
 .column {
   float: left;
   /* width: 70%; */

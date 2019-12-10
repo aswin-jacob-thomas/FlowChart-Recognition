@@ -38,8 +38,8 @@ function handleRequest(req, res) {
 }
 
 function createServer() {
-    http.createServer(handleRequest).listen(3000, () => {
-        console.log("Server started at localhost:3000");
+    http.createServer(handleRequest).listen(8080, () => {
+        console.log("Server started at localhost:8080");
         console.log("Terminate server with ctrl+c");
     });
 }

@@ -33,6 +33,46 @@ document.addEventListener('DOMContentLoaded', function() {
     sketch = sketchSurface.sketch;
 });
 
+$(document).ready(function(){
+    var width = document.getElementById('canvasContainer').offsetWidth;
+    var height = document.getElementById('canvasContainer').offsetHeight;
+    console.log(width)
+    console.log(height)
+
+    var from = new paper.Point(width-87, 12);
+    var to = new paper.Point(width-37, 12);
+    var myLine = new paper.Path.Line(from, to);
+    myLine.strokeColor = 'black';
+    myLine.selected = true
+
+    let center = new paper.Point(width-62, 50);
+    var myCircle = new paper.Path.Circle(center, 25);
+    myCircle.strokeColor = 'black'
+    myCircle.selected = true
+
+    var rec = new paper.Rectangle(new paper.Point(width-87, 112), new paper.Point(width-37, 87));
+    var myRectangle = new paper.Path.Rectangle(rec);
+    myRectangle.strokeColor = 'black'
+    myRectangle.selected = true
+
+    var sq_rect = new paper.Rectangle(new paper.Point(width-87, 174), new paper.Point(width-37, 124));
+    var mySqaure = new paper.Path.Rectangle(sq_rect);
+    mySqaure.strokeColor = 'black'
+    mySqaure.selected = true
+
+    var d_rect = new paper.Rectangle(new paper.Point(width-87, 242), new paper.Point(width-37, 192));
+    var myDiamond = new paper.Path.Rectangle(d_rect);
+    myDiamond.strokeColor = 'black'
+
+    myDiamond.rotate(45);
+    myDiamond.selected = true
+
+    var ell_rect = new paper.Rectangle(new paper.Point(width-87, 285), new paper.Point(width-37, 260));
+    var my_Ellipse = new paper.Shape.Ellipse(ell_rect);
+    my_Ellipse.strokeColor = 'black'
+    my_Ellipse.selected = true
+})
+
 function attachClickHandlers() {
     document.getElementById('draw').addEventListener('click', enableDraw);
     document.getElementById('erase').addEventListener('click', enableErase);

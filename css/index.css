@@ -14,12 +14,13 @@ html {
 body, .content {
   overflow: hidden;
   height: auto;
-  min-height: 100vh;
+  min-height: 80vh;
+
 }
 
 #canvasContainer {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  /* width: 70%; */
   overflow: hidden;
 }
 
@@ -29,7 +30,7 @@ body, .content {
   overflow: hidden;
   background: url('../images/grid-md.png') repeat;
   margin: 0;
-  min-width: 1024px;
+  /* min-width: 1024px; */
 }
 
 canvas.draw {
@@ -112,19 +113,60 @@ li.valid {
   border-radius: 25px;
 }
 
+li.generate {
+  background-color: #777;
+  background-image: url('../images/idea.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
 .column {
   float: left;
-  width: 70%;
+  /* width: 70%; */
 }
 
 /* Clear floats after the columns */
-.row:after {
+/* .row:after {
   content: "";
   display: table;
   clear: both;
-}
+} */
 
 .row{
 margin-left:0px;
 margin-right: 0px;
+}
+
+textarea::-webkit-input-placeholder {
+  color: #0bf;
+}
+
+textarea:-moz-placeholder { /* Firefox 18- */
+  color: #0bf;  
+}
+
+textarea::-moz-placeholder {  /* Firefox 19+ */
+  color: #0bf;  
+}
+
+textarea:-ms-input-placeholder {
+  color: #0bf;  
+}
+
+textarea::placeholder {
+  color: #0bf;  
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+:-moz-placeholder {
+  font-style: italic;  
+}
+::-moz-placeholder {
+  font-style: italic;  
+}
+:-ms-input-placeholder {  
+  font-style: italic; 
 }

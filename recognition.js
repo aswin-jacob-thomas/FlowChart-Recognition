@@ -16,6 +16,7 @@ window.figures = []
 let ellipse_text = null;
 let dollar = new DollarRecognizer();
 let flowChart = new FlowChart();
+document.getElementById('psuedo').value='';
 document.addEventListener('DOMContentLoaded', function() {
     attachClickHandlers();
     sketchSurface = new SketchSurface('sketchCanvas');
@@ -29,6 +30,7 @@ function attachClickHandlers() {
     document.getElementById('erase').addEventListener('click', enableErase);
     document.getElementById('delete').addEventListener('click', clearCanvases);
     document.getElementById('undo').addEventListener('click', undoLastFigure);
+    document.getElementById('generate').addEventListener('click',generatePsuedoCode);
     document.getElementById('isValid').addEventListener('click',isValidFlowChart);
 }
 
@@ -84,11 +86,29 @@ function generateCode(head, initialSpace){
 }
 
 function isValidFlowChart(){
+    
+}
+// let pseudoVisible = false;
+function generatePsuedoCode(){
+    // console.log('visisble', pseudoVisible)
     //window.figures
-    code += 'Start\n'
-    generateCode(window.figures[0],'');
-    code += 'Stop\n'
-    console.log(code)
+    // if(pseudoVisible == false){
+    //     document.getElementById('drawColumn').className = 'column';
+    //     pseudoVisible = true;
+    // }else{
+    //     document.getElementById('drawColumn').classList.remove('column');
+    //     pseudoVisible = false;
+    // }
+    code = ''
+    
+    if(window.figures.length >0){
+        code += 'Start\n'
+        generateCode(window.figures[0],'');
+        code += 'Stop\n';
+    }
+    
+    document.getElementById('psuedo').value = code;
+    // console.log(code)
 }
 
 function undoLastFigure(){
@@ -369,6 +389,8 @@ function clearCanvases() {
         clearPaperCanvases();
         clearSketchData();
     }
+
+    document.getElementById('psuedo').value='';
 }
 
 function clearSketchData() {

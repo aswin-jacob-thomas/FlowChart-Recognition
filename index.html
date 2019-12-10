@@ -14,8 +14,8 @@
   </head>
 
   <body>
-    <div class="row">
-      <div class="column">
+    <div id="parentDiv" style="display: flex;">
+      <div id="drawColumn"  style="flex: max-content;">
         <div class="content">
           <h4>Flow Chart</h4>
           <div id="canvasContainer">
@@ -28,12 +28,15 @@
               <li id="erase" class="erase"></li>
               <li id="delete" class="delete"></li>
               <li id="undo" class="undo"></li>
+              <li id="generate" class="generate"></li>
               <li id="isValid" class="valid"></li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="column">
+      <div id="psuedocode" >
+        <h4>Compiled Psuedocode</h4>
+        <textarea id="psuedo" placeholder="Draw a flowchart and compile to get the pseduocode" rows="100" cols="5" style="height: 100%; margin-left:25px;font-size: large; margin-right: 25px;padding: 20px;background-color:cornsilk"></textarea>
         
       </div>
   </div>

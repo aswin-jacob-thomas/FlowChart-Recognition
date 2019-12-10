@@ -1,0 +1,113 @@
+a {
+  color: #eee;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 300;
+}
+
+html {
+  height: 100%;
+  min-height: 100%;
+}
+
+body, .content {
+  overflow: hidden;
+  height: auto;
+  min-height: 100vh;
+}
+
+#canvasContainer {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+#sketchCanvas {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: url('../images/grid-md.png') repeat;
+  margin: 0;
+  min-width: 1024px;
+}
+
+canvas.draw {
+  cursor: crosshair;
+}
+
+canvas.erase {
+  cursor: url('../images/eraserCursor.svg'), auto;
+}
+
+#drawOptions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 218px;
+  height: 50px;
+  border-radius: 25px;
+}
+
+#drawOptions ul {
+  margin: 0;
+  padding: 0;
+}
+
+#drawOptions li {
+  display: inline-block;
+  margin: 0 0 0 0px;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+}
+
+#drawOptions li.active {
+  background-color: #500000;
+}
+
+#drawOptions li:hover {
+	opacity: 0.8;
+	transition-duration: 0.5s;
+}
+
+li.draw {
+  background-color: #777;
+  background-image: url('../images/pencil.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
+li.erase {
+  background-color: #777;
+  background-image: url('../images/eraser.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
+li.delete {
+  background-color: #777;
+  background-image: url('../images/delete.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
+li.undo {
+  background-color: #777;
+  background-image: url('../images/undo.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}
+
+li.valid {
+  background-color: #777;
+  background-image: url('../images/tick.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 25px;
+}

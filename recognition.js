@@ -461,10 +461,11 @@ function clearCanvases() {
 
     document.getElementById('psuedo').value='';
     ellipse_text = null;
-    window.figrues = []
+    window.figures.length = 0
     code = ''
     undoDone = false
     text = null
+    console.log("Came here after flushing")
 }
 
 function clearSketchData() {

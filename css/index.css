@@ -81,6 +81,7 @@ li.draw {
   border-radius: 25px;
 }
 
+
 li.erase {
   background-color: #777;
   background-image: url('../images/eraser.svg');
@@ -119,6 +120,7 @@ li.generate {
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 25px;
+  
 }
 
 li.metrics {

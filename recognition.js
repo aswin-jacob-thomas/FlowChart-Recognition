@@ -43,16 +43,16 @@ function createDemo(){
     // console.log(width)
     // console.log(height)
 
-    var from = new paper.Point(width-87, 12);
-    var to = new paper.Point(width-37, 12);
+    var from = new paper.Point(width-87, 75);
+    var to = new paper.Point(width-37, 75);
     var myLine = new paper.Path.Line(from, to);
     myLine.strokeColor = 'black';
     myLine.selected = true
 
-    let center = new paper.Point(width-62, 50);
-    var myCircle = new paper.Path.Circle(center, 25);
-    myCircle.strokeColor = 'black'
-    myCircle.selected = true
+    // let center = new paper.Point(width-62, 50);
+    // var myCircle = new paper.Path.Circle(center, 25);
+    // myCircle.strokeColor = 'black'
+    // myCircle.selected = true
 
     var rec = new paper.Rectangle(new paper.Point(width-87, 112), new paper.Point(width-37, 87));
     var myRectangle = new paper.Path.Rectangle(rec);

@@ -14,3 +14,4 @@ The application is deployed in AWS: [link](http://flowchart.us-west-2.elasticbea
 	node main.js
 
 Navigate to `localhost:8080`.
+![demo](demo/demo-flowchart.png)

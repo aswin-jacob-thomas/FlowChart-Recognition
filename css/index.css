@@ -15,7 +15,14 @@ body, .content {
   overflow: hidden;
   height: auto;
   min-height: 80vh;
+  width: inherit
+}
 
+.drawColIssue {
+  width: -moz-available; 
+  width: -webkit-fill-available;
+  padding-left:10px; 
+  display: flex;
 }
 
 #canvasContainer {

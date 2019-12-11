@@ -40,8 +40,8 @@ $(document).ready(function(){
 function createDemo(){
     var width = document.getElementById('canvasContainer').offsetWidth;
     var height = document.getElementById('canvasContainer').offsetHeight;
-    console.log(width)
-    console.log(height)
+    // console.log(width)
+    // console.log(height)
 
     var from = new paper.Point(width-87, 12);
     var to = new paper.Point(width-37, 12);
@@ -89,8 +89,16 @@ function attachClickHandlers() {
     document.getElementById('delete').addEventListener('click', clearCanvases);
     document.getElementById('undo').addEventListener('click', undoLastFigure);
     document.getElementById('generate').addEventListener('click',generatePsuedoCode);
-    document.getElementById('isValid').addEventListener('click',isValidFlowChart);
+    document.getElementById('isValid').addEventListener('click',isValid);
     document.getElementById('metrics').addEventListener('click',generateMetrics);
+}
+
+function isValid(){
+    let answer = isValidFlowChart();
+    document.getElementById('isValidPopup').innerHTML = answer;
+    $( "#validForm" ).dialog({
+        modal: true
+    });
 }
 
 /***** Edit things below this point *****/
@@ -134,7 +142,7 @@ function generateMetrics(){
 
 function printRecursive(head, parent){
     // console.log(head.getToFigures())
-    console.log(head.getShape(), " ", head.getLabel().getContent(), " coming from ", parent);
+    // console.log(head.getShape(), " ", head.getLabel().getContent(), " coming from ", parent);
     if(head.getToFigures() == null)
         return;
     for(let fig of head.getToFigures())
@@ -165,8 +173,68 @@ function generateCode(head, initialSpace){
     })
 }
 
-function isValidFlowChart(){
+function checkLastNodeEllipse(head){
+    // console.log("coming inside check fun with ", head)
+    if(head.getToFigures() == null){
+        // console.log('heads are ',head.getShape());
+        
+        return head.getShape() == 'ellipse' && head.getLabel().getContent() == 'Stop';
+    }
+    let answer = true;
+    Array.from(head.getToFigures()).forEach(function(fig, i){
+        let ans = checkLastNodeEllipse(fig)
+        // console.log('answer from loopsing' , ans);
+        answer =  answer && ans
+    })
 
+    return answer;
+    
+}
+
+function isValidFlowChart(){
+    let figures = window.figures;
+    //If no figures, then false
+    if(figures.length == 0)
+        return "Sorry! Not valid, you have not created any nodes yet";
+    //Check whether the head is ellipse 
+    if(!(figures[0].getShape() == 'ellipse'))
+        return "Not valid, flowchart needs to start with Ellipse";
+    //Check start has only one to
+    if(figures[0].getToFigures() == null || !(figures[0].getToFigures().size == 1))
+        return "Nope! Start node should have exactly one 'to' node";
+    //All object except ellipse and diamond has one from and one to
+    for(let fig of figures){
+        if(fig.getShape() == 'ellipse' || fig.getShape() == 'diamond')
+            continue;
+        else{
+            if(fig.getToFigures() == null || fig.getFromFigures() == null || fig.getToFigures().size != 1 || fig.getFromFigures().size != 1){
+                // console.log('fig ',fig.getToFigures());
+                // console.log('fig ',fig.getFromFigures())
+                // if(fig.getToFigures())
+                //     console.log('fig ',fig.getToFigures().size)
+                // if(fig.getFromFigures())
+                // console.log('fig ',fig.getFromFigures().size)
+                return "Nooo!! "+fig.getShape()+" should have exactly one 'to' or 'from' node";
+            }
+        }    
+    }
+    //Diamond has one from and two to
+    for(let fig of figures){
+        if(fig.getShape() == 'diamond'){
+            if(fig.getFromFigures().size!=1)
+                return "Nope!! Diamond should have exactly one 'from' node";
+            
+            if(fig.getToFigures().size <= 0 || fig.getToFigures().size > 2)
+                return "Sorry! Diamond should have a maximum of two 'to' nodes";
+        }
+    }
+    //Stops with a Ellipse (Stop)
+    let last_node_ellipse = checkLastNodeEllipse(window.figures[0]);
+    if(!last_node_ellipse){
+        return "Nada!! Flowchart should end with ellipse";
+    }
+
+    return "Yayy! Flowchart is valid"
 }
 
 function generatePsuedoCode(){
@@ -185,7 +253,7 @@ function generatePsuedoCode(){
 let undoDone = false;
 
 function undoLastFigure(){
-    console.log("coming inside undo")
+    // console.log("coming inside undo")
     let shape = window.figures[window.figures.length-1].getShape();
     let textFigure = window.figures[window.figures.length-1].getLabel();
     window.figures[window.figures.length-1].getPath().visible = false;
@@ -203,6 +271,8 @@ function undoLastFigure(){
     metric[shape].subtractTP();
     metric[shape].addFP();
     undoDone = true;
+
+    find_connections(window.figures)
 }
 
 // This is called every time there is a mouse or pen up event on the canvas
@@ -356,7 +426,7 @@ function doComputations(){
 
     if(dialog_to_show.dialog('isOpen')){
         text = $( "#dialog-form input" ).val();
-        console.log("hey i got ", text);
+        // console.log("hey i got ", text);
         $( "#dialog-form input" ).val('');
         dialog_to_show.dialog( "close" );
     }
@@ -401,7 +471,7 @@ function doComputations(){
                 metric[key].addTN();
             }
 
-            console.log(key," TP ", metric[key].getTP(), " TN ", metric[key].getTN(), " FP ", metric[key].getFP(), " FN ", metric[key].getFN())
+            // console.log(key," TP ", metric[key].getTP(), " TN ", metric[key].getTN(), " FP ", metric[key].getFP(), " FN ", metric[key].getFN())
         }
 
         
@@ -422,7 +492,7 @@ function createDialog(text_to_show){
         width:350,
         buttons: {
             Save: function() {
-                console.log("from inside ", $( "#dialog-form input" ).val())
+                // console.log("from inside ", $( "#dialog-form input" ).val())
                 doComputations();
                 // divElem.find('.text').text($( "#dialog-form input" ).val()); 
                 // dialog.dialog( "close" );
@@ -440,6 +510,10 @@ function createDialog(text_to_show){
 
 function find_connections(figures){
     let lines = []
+    for(let fig of figures){
+        fig.setFromFiguresToNull();
+        fig.setToFiguresToNull();
+    }
     for(let fig of figures)
         if(fig.getShape() == 'line')
             lines.push(fig);
@@ -474,8 +548,8 @@ function find_connections(figures){
         if(toFigure!=null)
             toFigure.addFromFigures(fromFigure);
     }
-    console.log("RECURSIVELY PRINTING THE STATES IN THE ORDER");
-    console.log(window.figures)
+    // console.log("RECURSIVELY PRINTING THE STATES IN THE ORDER");
+    // console.log(window.figures)
     if(window.figures.length >0)
         printRecursive(window.figures[0], window.figures[0].getLabel().getContent());
 }
@@ -515,7 +589,7 @@ function clearCanvases() {
     code = ''
     undoDone = false
     text = null
-    console.log("Came here after flushing")
+    // console.log("Came here after flushing")
     createDemo()
 }
 

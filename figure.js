@@ -35,6 +35,14 @@ function Figure(path, shape, label){
     this.getToFigures = function(){
         return this.toFigure;
     }
+
+    this.setFromFiguresToNull = function(){
+        this.fromFigure =null;
+    }
+
+    this.setToFiguresToNull = function(){
+        this.toFigure = null;
+    }
 }
 
 export default Figure;

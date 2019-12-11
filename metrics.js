@@ -68,15 +68,15 @@ function Metrics(shape){
     this.fmeasure = function(){
         let num = 2*this.TP;
         let den = 2*this.TP + this.FP + this.FN;
-        console.log(this.TP);
-        console.log(this.FP);
-        console.log(this.FN);
+        // console.log(this.TP);
+        // console.log(this.FP);
+        // console.log(this.FN);
         if(num == 0 || den == 0){
             return 0;
         }
         else{
-            console.log(den)
-            console.log("Fmeasure of ",this.shape +" is "+ (2*this.TP)/(this.FP+this.FN+(2*this.TP)))
+            // console.log(den)
+            // console.log("Fmeasure of ",this.shape +" is "+ (2*this.TP)/(this.FP+this.FN+(2*this.TP)))
             return ((2*this.TP)/(this.FP+this.FN+(2*this.TP))).toPrecision(3)
         }
     }
